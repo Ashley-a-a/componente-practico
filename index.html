@@ -1,163 +1,376 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Librería Central | Sistema de Inventario</title>
-    <link rel="stylesheet" href="estilos.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>En las esquinas de un triángulo...</title>
+
+  <style>
+    body {
+        font-family: 'Times New Roman', Times, serif, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: #f5f5f5;
+        color: #dfd8d8;
+        line-height: 1.6;
+    }
+    h1 {
+        font-size: 2rem;
+        color: #f5d4d4;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .controls, .results, .canvas-container {
+        background: #f5deff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(109, 6, 6, 0.1);
+    }
+    .controls {
+        flex: 1;
+        min-width: 300px;
+    }
+    .results {
+        flex-basis: 100%;
+        margin-top: 1rem;
+    }
+    .controls h2 {
+        font-size: 1.3rem;
+        color: #010102;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+    .canvas-container h2 {
+        font-size: 1.3rem;
+        color: #a6a6e6;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    label {
+        font-size: 0.95rem;
+        color: #fceeee;
+        display: block;
+    }
+    input[type="number"],
+    .carga-input select {
+        padding: 0.5rem;
+        border: 1px solid #ddd3d3;
+        border-radius: 4px;
+        font-size: 1rem;
+        width: calc(100% - 1.2rem);
+        box-sizing: border-box;
+        background-color: #f8f7f7; 
+        color: #ece9e9;
+    }
+    .carga-input {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    .carga-input input {
+        flex-grow: 1;
+        width: auto;
+    }
+    .carga-input select {
+        width: auto;
+        flex-shrink: 0;
+    }
+    button {
+        background-color: #cee3f1; 
+        color: rgb(0, 0, 0); 
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+        margin-top: 1rem;
+    }
+    button:hover {
+        background-color: #2980b9;
+        color: white;
+    }
+    .results p {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+    }
+    .results strong, .results span {
+        color: #563ce7;
+        font-weight: bold;
+    }
+
+    .canvas-container {
+        flex: 2;
+        min-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f5deff; 
+    }
+    #simulationCanvas {
+        background: #e0e0e0;
+        border: 1px solid #050505; 
+        display: block;
+        margin-top: 1rem;
+    }
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls, .canvas-container {
+            min-width: unset;
+            width: 100%;
+        }
+    }
+    @media (prefers-color-scheme: dark) {
+        body {
+            background: #f0e4e4;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #080808;
+        }
+        .controls, .results, .canvas-container {
+            background: #68446d;
+            box-shadow: none;
+        }
+        .controls h2, .canvas-container h2 {
+            color: #ffffff; 
+        }
+        label {
+            color: #cccccc;
+        }
+        input[type="number"],
+        .carga-input select {
+            background-color: #f3eeee;
+            color: #0a0808;
+            border-color: #666666;
+        }
+        button {
+            background-color: #563ce7;
+            color: #ffffff; 
+        }
+        button:hover {
+            background-color: #6c5bd1;
+        }
+        .results strong, .results span {
+            color: #9b8cff;
+        }
+        #simulationCanvas {
+            background: #eee5e5;
+            border-color: #cccccc;
+        }
+    }
+    input, select, button {
+        transition: all 0.2s ease-in-out;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1 class="logo-text">Librería Central</h1>
-        <nav class="nav-links">
-            <a href="index.html">Inicio</a>
-            <a href="gestion.html">Gestión</a>
-
-            <button onclick="cerrarSesion()" class="cerrar-sesion">Cerrar Sesión</button>
-        </nav>
-    </header>
-
-    <main>
-        <div class="contenedor">
-            <section class="formulario">
-                <h2 style="text-align: center;">Bienvenido al sistema de gestión de inventario</h2>
-                <p style="text-align: center;">Administra fácilmente los libros de la librería desde este sistema.</p>
-            </section>
+  <h1>En las esquinas de un triángulo existen tres cargas puntuales. Calcule la fuerza eléctrica total sobre la carga q2.</h1>
+  <div class="container">
+    <div class="controls">
+      <form id="simulationForm">
+        <label for="angulo">Ángulo del triángulo (°)</label>
+        <input type="number" id="angulo" value="60" min="1" max="179" />
+        <label for="lado">Lado del triángulo (m)</label>
+        <input type="number" id="lado" value="0.5" step="0.01" min="0.1" />
+        <label for="q1">Carga q₁ (en el origen)</label>
+        <div class="carga-input">
+          <input type="number" id="q1" value="2" />
+          <select id="u1">
+            <option value="1e-3">mC</option>
+            <option value="1e-6" selected>μC</option>
+            <option value="1e-9">nC</option>
+          </select>
         </div>
-    </main>
-
-    <main>
-        <div class="contenedor">
-            <h2 style="text-align:center;">Galería de Libros</h2>
-
-<div class="galeria-libros">
-  <div class="libro">
-    <img src="img/LIB-0001-AF9K.png" alt="Libro 1">
-    <p>Libro 1</p>
+        <label for="q2">Carga q₂ (en el vértice superior) - Carga de interés</label>
+        <div class="carga-input">
+          <input type="number" id="q2" value="7" />
+          <select id="u2">
+            <option value="1e-3">mC</option>
+            <option value="1e-6" selected>μC</option>
+            <option value="1e-9">nC</option>
+          </select>
+        </div>
+        <label for="q3">Carga q₃ (en el vértice derecho)</label>
+        <div class="carga-input">
+          <input type="number" id="q3" value="-4" />
+          <select id="u3">
+            <option value="1e-3">mC</option>
+            <option value="1e-6" selected>μC</option>
+            <option value="1e-9">nC</option>
+          </select>
+        </div>
+        <button type="submit">Calcular y Dibujar</button>
+      </form>
+      <div class="results">
+        <h2>Resultados</h2>
+        <p>Fuerza neta sobre q₂: <strong id="fuerzaTotal">Calculando...</strong></p>
+        <p>Componentes: Fx = <span id="fx">?</span> N, Fy = <span id="fy">?</span> N</p>
+        <p>Ángulo de la fuerza neta: <span id="anguloTotal">?</span> °</p>
+      </div>
+    </div>
+    <div class="canvas-container">
+        <h2>Visualización</h2>
+        <canvas id="simulationCanvas" width="600" height="400"></canvas>
+    </div>
   </div>
-  <div class="libro">
-    <img src="img/LIB-0002-ZX8J.png" alt="Libro 2">
-    <p>Libro 2</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0003-QW4R.png" alt="Libro 3">
-    <p>Libro 3</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0004-MN2D.png" alt="Libro 4">
-    <p>Libro 4</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0005-PL6T.png" alt="Libro 5">
-    <p>Libro 5</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0006-XC7V.png" alt="Libro 6">
-    <p>Libro 6</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0007-BN3E.png" alt="Libro 7">
-    <p>Libro 7</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0008-LK9H.png" alt="Libro 8">
-    <p>Libro 8</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0009-WE1S.png" alt="Libro 9">
-    <p>Libro 9</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0010-TR8G.png" alt="Libro 10">
-    <p>Libro 10</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0011-DF6K.png" alt="Libro 11">
-    <p>Libro 11</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0012-RY4N.png" alt="Libro 12">
-    <p>Libro 12</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0013-KM7B.png" alt="Libro 13">
-    <p>Libro 13</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0014-VT3X.png" alt="Libro 14">
-    <p>Libro 14</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0015-GH5L.png" alt="Libro 15">
-    <p>Libro 15</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0016-ZB2Q.png" alt="Libro 16">
-    <p>Libro 16</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0017-YU8D.png" alt="Libro 17">
-    <p>Libro 17</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0018-NM1P.png" alt="Libro 18">
-    <p>Libro 18</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0019-AP6F.png" alt="Libro 19">
-    <p>Libro 19</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0020-HJ9W.png" alt="Libro 20">
-    <p>Libro 20</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0021-QE2Z.png" alt="Libro 21">
-    <p>Libro 21</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0022-UR4C.png" alt="Libro 22">
-    <p>Libro 22</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0023-OW7M.png" alt="Libro 23">
-    <p>Libro 23</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0024-XP5B.png" alt="Libro 24">
-    <p>Libro 24</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0025-JL3V.png" alt="Libro 25">
-    <p>Libro 25</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0026-DS6R.png" alt="Libro 26">
-    <p>Libro 26</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0027-KA9N.png" alt="Libro 27">
-    <p>Libro 27</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0028-MY1H.png" alt="Libro 28">
-    <p>Libro 28</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0029-LZ8T.png" alt="Libro 29">
-    <p>Libro 29</p>
-  </div>
-  <div class="libro">
-    <img src="img/LIB-0030-FE7X.png" alt="Libro 30">
-    <p>Libro 30</p>
-  </div>
-</div>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Librería Central. Todos los derechos reservados.</p>
-    </footer>
-    <script src="script.js"></script>
+  <script>
+    const canvas = document.getElementById("simulationCanvas");
+    const ctx = canvas.getContext("2d");
+    const fxOut = document.getElementById("fx");
+    const fyOut = document.getElementById("fy");
+    const fuerzaTotalOut = document.getElementById("fuerzaTotal");
+    const anguloTotalOut = document.getElementById("anguloTotal");
+    const K = 8.9875e9;
+    const anguloInput = document.getElementById("angulo");
+    const ladoInput = document.getElementById("lado");
+    const q1Input = document.getElementById("q1");
+    const q2Input = document.getElementById("q2");
+    const q3Input = document.getElementById("q3");
+    const u1Input = document.getElementById("u1");
+    const u2Input = document.getElementById("u2");
+    const u3Input = document.getElementById("u3");
+    const simulationForm = document.getElementById("simulationForm");
+    simulationForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        drawSimulation();
+    });
+    function getChargeInCoulombs(value, unitMultiplier) {
+        return parseFloat(value) * parseFloat(unitMultiplier);
+    }
+    function calculateForce(qA, qB, posA, posB) {
+        const dx = posB.x - posA.x;
+        const dy = posB.y - posA.y;
+        const r = Math.sqrt(dx ** 2 + dy ** 2);
+        if (r === 0) {
+            return { fx: 0, fy: 0 };
+        }
+        const magnitude = K * Math.abs(qA * qB) / (r * r);
+        const ux = dx / r;
+        const uy = dy / r;
+        let fx, fy;
+        if (qA * qB > 0) {
+            fx = magnitude * ux;
+            fy = magnitude * uy;
+        } else {
+            fx = -magnitude * ux;
+            fy = -magnitude * uy;
+        }
+        return { fx, fy };
+    }
+    function drawCharge(x, y, color, valueText, labelText, isTargetCharge = false) {
+        ctx.beginPath();
+        ctx.arc(x, y, 15, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        if (isTargetCharge) {
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, 2 * Math.PI);
+            ctx.strokeStyle = "purple";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+        ctx.fillStyle = "#000";
+        ctx.font = "bold 12px sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        const fullText = `${labelText}: ${valueText}`;
+        ctx.fillText(fullText, x + 15 + 5, y); 
+    }
+    function drawVector(startX, startY, endX, endY, color) {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        const headLen = 10;
+        const angle = Math.atan2(endY - startY, endX - startX);
+        ctx.beginPath();
+        ctx.moveTo(endX, endY);
+        ctx.lineTo(endX - headLen * Math.cos(angle - Math.PI / 6), endY - headLen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(endX - headLen * Math.cos(angle + Math.PI / 6), endY - headLen * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+    function drawTriangle(p1, p2, p3) {
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.lineTo(p3.x, p3.y);
+        ctx.closePath();
+        ctx.strokeStyle = "#bbb";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    }
+    function drawSimulation() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const anguloDeg = parseFloat(anguloInput.value);
+        const ladoReal = parseFloat(ladoInput.value);
+        const q1 = getChargeInCoulombs(q1Input.value, u1Input.value);
+        const q2 = getChargeInCoulombs(q2Input.value, u2Input.value);
+        const q3 = getChargeInCoulombs(q3Input.value, u3Input.value);
+        const margin = 50;
+        const usableWidth = canvas.width - 2 * margin;
+        const scalePxPerMeter = usableWidth / (ladoReal * 1.5);
+        const pos1 = { x: margin, y: canvas.height - margin };
+        const pos3 = { x: pos1.x + ladoReal * scalePxPerMeter, y: pos1.y };
+        const angleRad = anguloDeg * Math.PI / 180;
+        const pos2 = {
+            x: pos1.x + ladoReal * scalePxPerMeter * Math.cos(angleRad),
+            y: pos1.y - ladoReal * scalePxPerMeter * Math.sin(angleRad)
+        };
+        const currentTriangleWidth = Math.max(pos1.x, pos2.x, pos3.x) - Math.min(pos1.x, pos2.x, pos3.x);
+        const offsetX = (canvas.width - currentTriangleWidth) / 2 - Math.min(pos1.x, pos2.x, pos3.x);
+        pos1.x += offsetX;
+        pos2.x += offsetX;
+        pos3.x += offsetX;
+        drawTriangle(pos1, pos2, pos3);
+        drawCharge(pos1.x, pos1.y, q1 > 0 ? "#ffa500" : "#00bfff", `${q1Input.value} ${u1Input.options[u1Input.selectedIndex].text}`,"q1" );
+        drawCharge(pos2.x, pos2.y, q2 > 0 ? "#ff4500" : "#00bfff", `${q2Input.value} ${u2Input.options[u2Input.selectedIndex].text}`, "q2", true);
+        drawCharge(pos3.x, pos3.y, q3 > 0 ? "#00bfff" : "#ffa500", `${q3Input.value} ${u3Input.options[u3Input.selectedIndex].text}`, "q3");
+        const F12_vec = calculateForce(q1, q2, pos1, pos2);
+        const F32_vec = calculateForce(q3, q2, pos3, pos2);
+        const Fnet_vec = {
+            fx: F12_vec.fx + F32_vec.fx,
+            fy: F12_vec.fy + F32_vec.fy
+        };
+        const Fnet_magnitude = Math.sqrt(Fnet_vec.fx ** 2 + Fnet_vec.fy ** 2);
+        let Fnet_angle_rad = Math.atan2(Fnet_vec.fy, Fnet_vec.fx);
+        let Fnet_angle_deg = Fnet_angle_rad * 180 / Math.PI;
+        if (Fnet_angle_deg < 0) {
+            Fnet_angle_deg += 360;
+        }
+        fxOut.textContent = Fnet_vec.fx.toExponential(3);
+        fyOut.textContent = Fnet_vec.fy.toExponential(3);
+        fuerzaTotalOut.textContent = Fnet_magnitude.toExponential(3) + " N";
+        anguloTotalOut.textContent = Fnet_angle_deg.toFixed(2) + "°";
+        const forceScale = 2e5;
+        drawVector(pos2.x, pos2.y, pos2.x + F12_vec.fx * forceScale, pos2.y + F12_vec.fy * forceScale, "green");
+        drawVector(pos2.x, pos2.y, pos2.x + F32_vec.fx * forceScale, pos2.y + F32_vec.fy * forceScale, "blue");
+        drawVector(pos2.x, pos2.y, pos2.x + Fnet_vec.fx * forceScale, pos2.y + Fnet_vec.fy * forceScale, "black");
+    }
+    drawSimulation();
+  </script>
 </body>
 </html>
